@@ -24,7 +24,7 @@ the results in plain English.
                       │ (pandas DataFrame)
                       ▼
 ┌──────────────────────────────────────────┐
-│ STRAND 3: Insight & Presentation          │ ◄── claude-haiku-4-5
+│ STRAND 3: Insight & Presentation          │ ◄── claude-sonnet-5
 │  - 2-sentence plain-English answer        │
 └──────────────────────────────────────────┘
 ```
@@ -133,6 +133,14 @@ python3 main.py "Compare total deposits versus total loan exposure for each cust
 The original brief referenced `claude-3-5-sonnet` and `claude-3-haiku`, which
 are older/deprecated model identifiers. This implementation uses the current
 equivalents — `claude-sonnet-5` for SQL generation (needs stronger reasoning
-for joins/self-correction) and `claude-haiku-4-5-20251001` for summarization
-(fast/cheap, since it only summarizes an already-small result table). Swap
-these in `config.py` if your account has access to different models.
+for joins/self-correction) and `claude-sonnet-5` for summarization.
+
+Strand 3 originally used `claude-haiku-4-5-20251001` on the assumption that
+summarizing an already-small result table is a lightweight task. It was
+upgraded after Haiku miscounted rows and contradicted itself on a numeric
+query. The underlying cause was the Strand 3 prompt and is fixed there; Sonnet
+is used for defense-in-depth, since a hallucinated figure in a summary is the
+hardest error for a user to catch. See the `SUMMARY_MODEL` notes in
+`config.py` for the full rationale.
+
+Swap these in `config.py` if your account has access to different models.

@@ -33,10 +33,30 @@ DB_ADMIN_CONFIG = {
 # --- Models -------------------------------------------------------------------
 # Strand 1 uses a stronger reasoning model since SQL generation, multi-table
 # joins, and self-correction from error traces all benefit from stronger
-# reasoning. Strand 3 uses a fast/cheap model since summarizing an already
-# small, already-computed result table is a much lighter task.
+# reasoning.
+#
+# Strand 3 was originally on Haiku, on the assumption that summarizing an
+# already-computed, already-small result table is a lightweight task. That
+# assumption turned out to be wrong for *numeric* summaries: on the query
+# "customers whose loan amount is more than 20 times their monthly income",
+# Haiku miscounted the 7 returned rows as "four customers" and then
+# contradicted itself, claiming one of the customers in the table did not
+# actually meet the criteria.
+#
+# The root cause was the Strand 3 prompt, and it is fixed there: the row count
+# is now computed in Python rather than by the model, and the system prompt
+# forbids recalculating or re-evaluating any numeric condition (the SQL has
+# already settled which rows qualify). That fix alone mitigates the bug.
+#
+# Sonnet is used here for defense-in-depth rather than because the prompt fix
+# is insufficient. Summaries are the only part of the pipeline a user reads
+# without seeing the underlying data, so a hallucinated figure here is the
+# hardest kind to catch -- unlike a bad SQL query, which surfaces as an error
+# or an obviously wrong table. The extra cost per query is small relative to
+# that risk, and stronger instruction-following makes the prompt's "describe
+# only what is in the table" constraints likelier to hold.
 SQL_GENERATION_MODEL = "claude-sonnet-5"
-SUMMARY_MODEL = "claude-haiku-4-5-20251001"
+SUMMARY_MODEL = "claude-sonnet-5"
 
 # --- Schema metadata ------------------------------------------------------
 # This is injected into Strand 1's system prompt so the model knows exactly
