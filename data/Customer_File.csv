@@ -1,0 +1,21 @@
+customer_id,customer_name,customer_age,monthly_income,city
+CUST001,Rajesh Kumar,45,120000,Chennai
+CUST002,Priya Sharma,34,85000,Bengaluru
+CUST003,Arun Nair,52,175000,Kochi
+CUST004,Meera Iyer,28,65000,Chennai
+CUST005,Vikram Singh,40,140000,Mumbai
+CUST006,Anita Patel,31,90000,Ahmedabad
+CUST007,Rohit Gupta,38,110000,Delhi
+CUST008,Kavya Reddy,26,55000,Hyderabad
+CUST009,Suresh Menon,49,200000,Kochi
+CUST010,Neha Verma,36,95000,Pune
+CUST011,Karthik Raman,42,160000,Chennai
+CUST012,Pooja Khanna,30,70000,Delhi
+CUST013,Sanjay Rao,55,220000,Bengaluru
+CUST014,Divya Nair,29,60000,Kochi
+CUST015,Manoj Joshi,47,180000,Mumbai
+CUST016,Shruti Shah,33,88000,Ahmedabad
+CUST017,Amit Mishra,41,125000,Lucknow
+CUST018,Lakshmi Narayanan,37,135000,Chennai
+CUST019,Ritika Kapoor,27,72000,Gurgaon
+CUST020,Naveen Pillai,50,210000,Hyderabad
