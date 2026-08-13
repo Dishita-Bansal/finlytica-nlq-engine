@@ -1,5 +1,5 @@
 """
-main.py — Finlytica Banking NLQ-to-SQL Analytics Engine
+main.py - Finlytica Banking NLQ-to-SQL Analytics Engine
 ==========================================================
 Orchestrates the three Strands:
     Strand 1 (translation & guardrails) -> Strand 2 (execution & self-heal)
@@ -19,9 +19,16 @@ from strands.strand1_sql_generation import SQLGuardrailError
 pd.set_option("display.max_columns", None)
 pd.set_option("display.width", 120)
 
+_MUTATION_WORDS = {"delete", "drop", "update", "insert", "alter", "truncate", "remove", "erase", "wipe"}
+
 
 def answer_question(nl_query: str, verbose: bool = True) -> None:
     print(f"\n{'=' * 70}\nQ: {nl_query}\n{'=' * 70}")
+
+    if any(word in nl_query.lower().split() for word in _MUTATION_WORDS):
+        print("🛑 SECURITY GUARDRAIL BLOCKED THIS QUERY")
+        print("   Reason: Input contains mutation intent. No SQL was executed.")
+        return
 
     try:
         df, final_sql, attempt_log = run_with_self_healing(nl_query, verbose=verbose)
@@ -41,7 +48,6 @@ def answer_question(nl_query: str, verbose: bool = True) -> None:
     else:
         print(df.to_string(index=False))
 
-    # --- Strand 3: summarize ---
     from strands.strand3_explanation import summarize_result
     summary = summarize_result(nl_query, df)
     print(f"\n💡 Insight: {summary}")
@@ -49,13 +55,11 @@ def answer_question(nl_query: str, verbose: bool = True) -> None:
 
 def main():
     if len(sys.argv) > 1:
-        # Single query mode: python3 main.py "question"
         nl_query = " ".join(sys.argv[1:])
         answer_question(nl_query)
         return
 
-    # Interactive mode
-    print("Finlytica Banking NLQ Engine — type a question in plain English.")
+    print("Finlytica Banking NLQ Engine - type a question in plain English.")
     print("Type 'exit' or 'quit' to stop.\n")
     while True:
         try:
